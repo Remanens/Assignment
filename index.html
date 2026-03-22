@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aditya -- CV</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+        /* Design tokens -- all colours share hue 216 (steel blue).
+       Saturation drops as luminance rises, matching natural light behaviour.
+       Naming: b900 = darkest, b025 = near-white. */
+    :root {
+      --b900: hsl(216,74%,8%);
+      --b800: hsl(216,70%,13%);
+      --b700: hsl(216,66%,19%);
+      --b600: hsl(216,62%,26%);
+      --b500: hsl(216,60%,36%);
+      --b400: hsl(216,56%,50%);
+      --b300: hsl(216,50%,68%);
+      --b200: hsl(216,44%,82%);
+      --b100: hsl(216,38%,91%);
+      --b050: hsl(216,32%,96%);
+      --b025: hsl(216,26%,98%);
+      --white: #ffffff;
+      --green: #34d399;
+
+      --accent: var(--b500);
+      --lift:   var(--b400);
+      --bd-dk:  hsla(216,50%,68%,.1);
+      --bd-lt:  var(--b200);
+      --page:   var(--b050);
+      --surf:   var(--b025);
+      --panel:  var(--b700);
+      --hero:   var(--b800);
+
+      --t1: hsl(216,62%,10%);
+      --t2: hsl(216,42%,26%);
+      --t3: hsl(216,24%,50%);
+      --tw: hsl(216,48%,92%);
+      --td: hsl(216,30%,56%);
+
+      --serif:  'Playfair Display', Georgia, serif;
+      --sans:   'Figtree', 'Helvetica Neue', sans-serif;
+      --spring: cubic-bezier(.22,.68,0,1.08);
+      --ease:   cubic-bezier(.4,0,.2,1);
+    }
+    /* Reset */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:16px;scroll-behavior:smooth;height:100%}
+    body{
+      font-family:var(--sans);
+      background:var(--page);
+      color:var(--t1);
+      line-height:1.65;
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    /* Scroll progress bar -- CSS scroll-driven.
+       Falls back to hidden on browsers without animation-timeline. */
+    .progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--b600), var(--b300));
+      z-index: 1000;
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: scroll-track linear;
+      animation-timeline: scroll(root);
+    }
+
+    @keyframes scroll-track { to { transform: scaleX(1); } }
+
+    @supports not (animation-timeline: scroll()) {
+      .progress { display: none; }
+    }
+    /* Nav */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 900;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem,5.5vw,4.5rem);
+      background: hsla(216,74%,6%,.97);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--bd-dk);
+      transition: box-shadow .3s var(--ease);
+    }
+
+    .nav { box-shadow: 0 4px 40px hsla(216,74%,8%,.55); }
+
+    .nav_brand {
+      font-family: var(--serif);
+      font-size: .98rem;
+      font-weight: 400;
+      color: var(--tw);
+      letter-spacing: .04em;
+      user-select: none;
+    }
+
+    .nav_brand strong { font-weight: 400; color: var(--b300); }
+
+    .nav_links {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav_links a {
+      position: relative;
+      font-size: .67rem;
+      font-weight: 500;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+      color: hsla(216,48%,92%,.36);
+      padding-bottom: 2px;
+      transition: color .2s ease;
+    }
+
+    .nav_links a::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0;
+      width: 0; height: 1px;
+      background: var(--b300);
+      transition: width .3s var(--ease);
+    }
+
+    .nav_links a:hover,
+    .nav_links a.active { color: var(--b300); }
+
+    .nav_links a:hover::after,
+    .nav_links a.active::after { width: 100%; }
+
+    
+    .nav_toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav_toggle span {
+      display: block;
+      width: 22px; height: 1.5px;
+      background: var(--tw);
+      transition: transform .28s var(--ease), opacity .2s ease;
+    }
+
+    /* Checkbox trick: checked state drives hamburger --> X and drawer open */
+    #nav-chk:checked ~ .nav .nav_toggle span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    #nav-chk:checked ~ .nav .nav_toggle span:nth-child(2) { opacity: 0; }
+    #nav-chk:checked ~ .nav .nav_toggle span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    /* Hero */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding:
+        clamp(5rem,10vh,7.5rem)
+        clamp(1.5rem,5.5vw,4.5rem)
+        clamp(3rem,5vh,4.5rem);
+      background: var(--hero);
+      position: relative;
+      overflow: hidden;
+    }
+
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: -40px;
+      background-image: radial-gradient(circle, hsla(216,50%,68%,.12) 1px, transparent 1px);
+      background-size: 26px 26px;
+      z-index: 0;
+      pointer-events: none;
+      will-change: transform;
+      transition: transform .12s linear;
+    }
+
+    
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -120px; left: -90px;
+      width: clamp(300px,60vw,600px);
+      height: clamp(300px,60vw,600px);
+      background: radial-gradient(ellipse, hsla(216,60%,36%,.22) 0%, transparent 62%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero_glow-tr {
+      position: absolute;
+      top: -80px; right: -80px;
+      width: clamp(200px,40vw,440px);
+      height: clamp(200px,40vw,440px);
+      background: radial-gradient(ellipse, hsla(216,50%,68%,.07) 0%, transparent 62%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    
+    .hero_grain {
+      position: absolute; inset: 0;
+      z-index: 1; pointer-events: none;
+      opacity: .03;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 300px 300px;
+    }
+
+    .hero_inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: flex-end;
+      gap: 2rem;
+    }
+
+    
+    /* Staggered load-in - each element gets its delay below */
+    .hero_eyebrow,
+    .hero_name,
+    .hero_degree,
+    .status,
+    .hero_contact,
+    .hero_divider {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: rise .72s var(--spring) forwards;
+    }
+
+    @keyframes rise {
+      to { opacity: 1; transform: none; }
+    }
+
+    .hero_eyebrow  { animation-delay: .15s; }
+    .hero_name     { animation-delay: .28s; }
+    .hero_degree   { animation-delay: .40s; }
+    .status         { animation-delay: .50s; }
+    .hero_contact  { animation-delay: .60s; }
+    .hero_divider  { animation-delay: .70s; }
+
+    .hero_eyebrow {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      font-size: .62rem;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--b400);
+      margin-bottom: 1.05rem;
+    }
+
+    .hero_eyebrow::before {
+      content: '';
+      width: 20px; height: 1px;
+      background: var(--b400);
+      flex-shrink: 0;
+    }
+
+    /* Shimmer sweeps across on load via ::after -- fires once at 1.4s */
+    .hero_name {
+      font-family: var(--serif);
+      font-size: clamp(3rem,7vw,5.6rem);
+      font-weight: 400;
+      line-height: 1.02;
+      color: var(--white);
+      letter-spacing: -.01em;
+    }
+
+    .hero_name em {
+      display: block;
+      font-style: italic;
+      color: var(--b300);
+    }
+
+    
+    .type-cursor {
+      display: inline-block;
+      width: 3px;
+      height: .82em;
+      background: var(--b300);
+      vertical-align: middle;
+      margin-left: 4px;
+      animation: blink .85s step-end infinite;
+    }
+
+    .type-cursor.done { display: none; }
+
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0; }
+    }
+
+    .hero_degree {
+      margin-top: .9rem;
+      font-size: clamp(.64rem,1.1vw,.7rem);
+      font-weight: 400;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: hsla(216,48%,92%,.3);
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      margin-top: 1.15rem;
+      position: relative;
+      cursor: default;
+    }
+
+    .status_radar {
+      position: relative;
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+    }
+
+    .status_core {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 7px hsla(153,60%,51%,.55);
+      z-index: 2;
+    }
+
+    .status_ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      border: 1.5px solid var(--green);
+      transform: translate(-50%,-50%);
+      animation: ping 2.4s ease-out infinite;
+    }
+
+    .status_ring--2 { animation-delay: 1.2s; }
+
+    @keyframes ping {
+      0%   { width: 7px;  height: 7px;  opacity: .85; border-width: 1.5px; }
+      100% { width: 38px; height: 38px; opacity: 0;   border-width: .4px;  }
+    }
+
+    .status_text { display: flex; flex-direction: column; gap: .05rem; }
+
+    .status_main {
+      font-size: .72rem; font-weight: 500;
+      color: var(--green); letter-spacing: .04em; line-height: 1.2;
+    }
+
+    .status_sub {
+      font-size: .59rem; font-weight: 300;
+      color: hsla(216,48%,92%,.36); letter-spacing: .07em; line-height: 1.2;
+    }
+
+    .status_reveal {
+      position: absolute;
+      bottom: calc(100% + .9rem); left: 0;
+      background: hsla(216,66%,17%,.97);
+      border: 1px solid hsla(216,50%,68%,.13);
+      border-radius: 7px;
+      padding: .9rem 1.15rem;
+      min-width: 230px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .24s var(--ease), transform .24s var(--spring);
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .status_reveal::after {
+      content: '';
+      position: absolute;
+      top: 100%; left: 1.1rem;
+      border: 5px solid transparent;
+      border-top-color: hsla(216,66%,17%,.97);
+    }
+
+    .status:hover .status_reveal {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .status_reveal-title {
+      font-size: .55rem; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--green); margin-bottom: .6rem;
+    }
+
+    .status_item {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .72rem; font-weight: 300;
+      color: var(--tw); padding: .2rem 0; line-height: 1.4;
+    }
+
+    .status_item::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: hsla(216,50%,68%,.4);
+      flex-shrink: 0;
+    }
+
+    .hero_contact { display: flex; flex-direction: column; align-self: flex-end; }
+
+    .c-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: .6rem;
+      padding: .28rem 0;
+      border-bottom: 1px solid hsla(216,50%,68%,.07);
+      transition: border-color .2s ease;
+      text-decoration: none;
+    }
+
+    .c-row:last-child { border-bottom: none; }
+    .c-row:hover { border-color: hsla(216,50%,68%,.18); }
+
+    .c-label {
+      font-size: .57rem; font-weight: 600;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--b400); flex-shrink: 0;
+    }
+
+    .c-val {
+      font-size: .76rem; font-weight: 300;
+      color: hsla(216,48%,92%,.42);
+      transition: color .2s ease;
+    }
+
+    .c-row:hover .c-val { color: var(--b300); }
+
+    .hero_divider {
+      position: relative; z-index: 2;
+      max-width: 1100px; width: 100%;
+      margin: clamp(2rem,4vh,3.5rem) auto 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        hsla(216,60%,36%,.4) 20%,
+        hsla(216,56%,50%,.65) 50%,
+        hsla(216,60%,36%,.4) 80%,
+        transparent
+      );
+    }
+
+    .hero_scroll {
+      position: absolute;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; gap: .4rem;
+      font-size: .54rem; font-weight: 500;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: hsla(216,48%,92%,.18);
+      animation: float-cue 2.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .hero_scroll-line {
+      width: 1px; height: 28px;
+      background: linear-gradient(to bottom, hsla(216,48%,92%,.2), transparent);
+    }
+
+    @keyframes float-cue {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(5px); }
+    }
+    /* Page layout */
+    .page {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding:
+        clamp(2.5rem,5vh,4rem)
+        clamp(1.5rem,5.5vw,4.5rem)
+        clamp(4rem,8vh,7rem);
+      display: grid;
+      grid-template-columns: 252px 1fr;
+      gap: clamp(2rem,4vw,4rem);
+      align-items: start;
+    }
+    /* Sidebar -- sticky on desktop, static + auto-grid on mobile */
+    .sidebar {
+      position: sticky;
+      top: 68px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    /* Panel cards.
+       Scroll-driven animation fires panel-rise as each enters the viewport.
+       @supports fallback plays the animation on load for older browsers. */
+    .panel {
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 1.25rem 1.4rem 1.45rem;
+      border: 1px solid var(--bd-dk);
+      animation: panel-rise .6s var(--spring) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+      transition:
+        box-shadow .3s var(--ease),
+        transform .3s var(--spring);
+    }
+
+    @keyframes panel-rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    @supports not (animation-timeline: view()) {
+      .panel            { animation: panel-rise .6s var(--spring) .1s both; }
+      .panel:nth-child(2) { animation-delay: .2s; }
+      .panel:nth-child(3) { animation-delay: .3s; }
+    }
+
+    .panel:hover {
+      box-shadow: 0 8px 40px hsla(216,74%,8%,.38);
+      transform: translateY(-2px);
+    }
+
+    .panel_title {
+      font-size: .57rem; font-weight: 600;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--b400);
+      padding-bottom: .7rem; margin-bottom: .92rem;
+      border-bottom: 1px solid hsla(216,50%,68%,.1);
+    }
+    .skill {
+      display: flex;
+      align-items: baseline;
+      padding: .33rem 0;
+      border-bottom: 1px solid hsla(216,50%,68%,.05);
+      transition: padding-left .2s ease;
+    }
+
+    .skill:last-child { border-bottom: none; }
+    .skill:hover { padding-left: .3rem; }
+
+    .skill_name {
+      font-size: .8rem; font-weight: 400;
+      color: var(--tw); white-space: nowrap; flex-shrink: 0;
+      transition: color .2s ease;
+    }
+
+    .skill:hover .skill_name { color: var(--white); }
+
+    .skill_leader {
+      flex: 1; overflow: hidden; height: 1em;
+      position: relative; top: 1px; margin: 0 .42rem;
+    }
+
+    .skill_leader::after {
+      content: '. . . . . . . . . . . . . . . . . . . . .';
+      font-size: .66rem;
+      color: hsla(216,50%,68%,.13);
+      letter-spacing: .1em; white-space: nowrap;
+    }
+
+    .skill_level {
+      font-size: .58rem; font-weight: 500;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--td); flex-shrink: 0;
+      transition: color .2s ease;
+    }
+
+    .skill:hover .skill_level { color: var(--b300); }
+
+    
+    .skill_bar-wrap {
+      width: 100%;
+      height: 2px;
+      background: hsla(216,50%,68%,.1);
+      border-radius: 2px;
+      margin-top: 3px;
+      overflow: hidden;
+    }
+
+    /* Bar grows from 0 --> target width as panel scrolls into view */
+    .skill_bar {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--b500), var(--b300));
+      width: var(--bar-w, 70%);
+      animation: bar-grow 1s var(--ease) both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 50%;
+    }
+
+    @keyframes bar-grow {
+      from { width: 0%; }
+    }
+
+    @supports not (animation-timeline: view()) {
+      .skill_bar { animation: bar-grow 1s var(--ease) .5s both; }
+    }
+    .int-group { margin-bottom: .82rem; }
+    .int-group:last-child { margin-bottom: 0; }
+
+    .int-group_label {
+      font-size: .54rem; font-weight: 500;
+      letter-spacing: .13em; text-transform: uppercase;
+      color: hsla(216,30%,56%,.48); margin-bottom: .38rem;
+    }
+
+    .int-group_tags { display: flex; flex-wrap: wrap; gap: .28rem; }
+
+    .tag {
+      font-size: .68rem; font-weight: 300;
+      padding: .19rem .52rem;
+      border: 1px solid hsla(216,60%,36%,.28);
+      border-radius: 3px;
+      color: var(--b300);
+      letter-spacing: .02em;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .22s var(--spring);
+      user-select: none;
+    }
+
+    .tag::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      background: hsla(216,56%,50%,.35);
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: width .5s ease, height .5s ease, opacity .5s ease;
+      opacity: 0;
+    }
+
+    .tag:active::after {
+      width: 200px; height: 200px; opacity: 0;
+      transition: 0s;
+    }
+
+    .tag:hover { transform: translateY(-2px); }
+
+    .tag.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--white);
+    }
+    .lang-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .36rem 0;
+      border-bottom: 1px solid hsla(216,50%,68%,.05);
+    }
+
+    .lang-row:last-child { border-bottom: none; }
+    .lang-row_name { font-size: .82rem; font-weight: 400; color: var(--tw); }
+    .lang-row_level { font-size: .58rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--td); }
+    /* Main content */
+    .main { display: flex; flex-direction: column; gap: clamp(2.5rem,5vh,3.8rem); }
+
+    .s-head { display: flex; align-items: center; gap: .88rem; margin-bottom: 1.4rem; }
+
+    .s-num {
+      font-family: var(--serif);
+      font-size: .7rem; font-weight: 400; font-style: italic;
+      color: var(--t3); flex-shrink: 0;
+    }
+
+    .s-title {
+      font-family: var(--serif);
+      font-size: clamp(1.35rem,2.4vw,1.62rem);
+      font-weight: 400; color: var(--t1); white-space: nowrap;
+    }
+
+    .s-rule {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--b200), transparent);
+    }
+
+    /* Sections fade up as they enter view */
+    .section-wrap {
+      animation: section-rise .65s var(--spring) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 28%;
+    }
+
+    @keyframes section-rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    @supports not (animation-timeline: view()) {
+      .section-wrap { animation: section-rise .65s var(--spring) .1s both; }
+    }
+    /* About card - left border breathes slowly, stops on hover */
+    .about-card {
+      background: var(--white);
+      border: 1px solid var(--bd-lt);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      overflow: hidden;
+      transition: box-shadow .3s var(--ease), transform .3s var(--spring);
+    }
+
+    .about-card:hover {
+      box-shadow: 0 12px 52px hsla(216,74%,8%,.1);
+      transform: translateY(-3px);
+    }
+
+    .about-card_body {
+      padding: clamp(1.5rem,3vw,2rem) clamp(1.5rem,3vw,2.2rem) clamp(1.3rem,2.5vw,1.75rem);
+      position: relative;
+    }
+
+    
+    /* Faint grid-paper texture inside the card */
+    .about-card_body::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(hsla(216,60%,36%,.023) 1px, transparent 1px),
+        linear-gradient(90deg, hsla(216,60%,36%,.023) 1px, transparent 1px);
+      background-size: 26px 26px;
+      pointer-events: none;
+    }
+
+    .about-card_ornament {
+      font-family: var(--serif);
+      font-size: 5.4rem; font-weight: 400; line-height: .78;
+      color: hsla(216,60%,36%,.09);
+      float: left;
+      margin-right: .07em; margin-top: .04em; margin-bottom: -.2em;
+      user-select: none; pointer-events: none;
+    }
+
+    .about-card__text {
+      font-size: clamp(.88rem,1.4vw,.915rem);
+      font-weight: 300; line-height: 1.94;
+      color: var(--t2); position: relative;
+    }
+
+    .about-card_text p + p { margin-top: .87em; }
+    .about-card_text strong { font-weight: 500; color: var(--t1); }
+    .about-card_text em { font-style: italic; font-family: var(--serif); font-size: 1.02em; color: var(--t1); }
+
+    /* Keyword chips at the bottom of the about card */
+    .about-card_chips {
+      padding: .95rem clamp(1.5rem,3vw,2.2rem);
+      background: var(--surf);
+      border-top: 1px solid var(--bd-lt);
+      display: flex; flex-wrap: wrap; gap: .4rem;
+    }
+
+    .chip {
+      font-size: .66rem; font-weight: 500;
+      letter-spacing: .04em;
+      padding: .26rem .76rem;
+      border-radius: 100px;
+      border: 1px solid var(--bd-lt);
+      color: var(--accent);
+      background: var(--white);
+      cursor: default;
+      transition: background .2s ease, border-color .2s ease, transform .22s var(--spring);
+    }
+
+    .chip:hover {
+      background: var(--b100);
+      border-color: var(--b300);
+      transform: translateY(-2px);
+    }
+    /* Education card */
+    .edu-card {
+      background: var(--white);
+      border: 1px solid var(--bd-lt);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: box-shadow .3s var(--ease), transform .3s var(--spring);
+    }
+
+    .edu-card:hover {
+      box-shadow: 0 12px 52px hsla(216,74%,8%,.1);
+      transform: translateY(-3px);
+    }
+
+    .edu-card_bar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--b900) 0%, var(--accent) 50%, var(--b300) 100%);
+    }
+
+    .edu-card_main {
+      padding: clamp(1.4rem,2.5vw,1.75rem) clamp(1.4rem,2.5vw,2rem);
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+    }
+
+    .edu-card_degree {
+      font-family: var(--serif);
+      font-size: clamp(1rem,1.8vw,1.12rem);
+      font-weight: 500; color: var(--t1); margin-bottom: .2rem;
+    }
+
+    .edu-card_school { font-size: .76rem; font-weight: 400; color: var(--t3); }
+
+    .edu-card_badge {
+      font-size: .62rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--white); background: var(--accent);
+      padding: .26rem .76rem; border-radius: 4px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .edu-card_courses {
+      padding: 1rem clamp(1.4rem,2.5vw,2rem) clamp(1.3rem,2.5vw,1.75rem);
+      border-top: 1px solid var(--bd-lt);
+      background: var(--surf);
+    }
+
+    .edu-card_cw-label {
+      font-size: .55rem; font-weight: 600;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--t3); margin-bottom: .65rem;
+    }
+
+    .course-grid { display: flex; flex-wrap: wrap; gap: .36rem; }
+
+    /* Left-border accent matches the about card border -- visual consistency */
+    .course-pill {
+      font-size: .72rem; font-weight: 400;
+      color: var(--t2); background: var(--white);
+      border: 1px solid hsla(216,44%,82%,.75);
+      border-left: 2px solid var(--lift);
+      border-radius: 0 4px 4px 0;
+      padding: .24rem .68rem; cursor: default;
+      transition: border-left-color .2s ease, background .2s ease, transform .2s ease;
+    }
+
+    .course-pill:hover {
+      border-left-color: var(--accent);
+      background: var(--b100);
+      transform: translateX(3px);
+    }
+    /* Footer */
+    .footer {
+      background: var(--b900);
+      padding: 2rem clamp(1.5rem,5.5vw,4.5rem);
+      text-align: center;
+      position: relative;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute; top: 0;
+      left: clamp(1.5rem,5.5vw,4.5rem);
+      right: clamp(1.5rem,5.5vw,4.5rem);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, hsla(216,60%,36%,.5), transparent);
+    }
+
+    .footer_name {
+      font-family: var(--serif);
+      font-size: .95rem; font-weight: 400;
+      color: var(--tw); letter-spacing: .07em; margin-bottom: .3rem;
+    }
+
+    .footer_note {
+      font-size: .6rem; font-weight: 400;
+      letter-spacing: .13em; text-transform: uppercase;
+      color: hsla(216,48%,92%,.2);
+    }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; gap: 2rem; }
+      .sidebar { position: static; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 1rem; }
+      .hero_inner { grid-template-columns: 1fr; }
+      .hero_contact { flex-direction: row; flex-wrap: wrap; align-items: flex-start; margin-top: 1.4rem; gap: .5rem; }
+      .c-row { justify-content: flex-start; border-bottom: none; border-right: 1px solid hsla(216,50%,68%,.1); padding: 0 .85rem 0 0; }
+      .c-row:last-child { border-right: none; }
+      .nav_links { position: fixed; top: 52px; left: 0; right: 0; flex-direction: column; align-items: flex-start; gap: 0; background: hsla(216,74%,6%,.98); padding: .75rem 0; transform: translateY(-110%); transition: transform .3s var(--ease); border-bottom: 1px solid var(--bd-dk); pointer-events: none; }
+      #nav-chk:checked ~ .nav .nav_links { transform: translateY(0); pointer-events: auto; }
+      .nav_links li { width: 100%; }
+      .nav_links a { display: block; padding: .72rem clamp(1.5rem,5.5vw,4.5rem); font-size: .72rem; }
+      .nav_links a::after { display: none; }
+      .nav_toggle { display: flex; }
+      .status_reveal { bottom: auto; top: calc(100% + .9rem); }
+      .status_reveal::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: hsla(216,66%,17%,.97); }
+    }
+
+    @media (max-width: 520px) { .sidebar { grid-template-columns: 1fr; } }
+    @media (min-width: 1400px) { .page { grid-template-columns: 276px 1fr; } }
+    @media (max-height: 500px) and (orientation: landscape) { .hero { min-height: auto; padding-top: 4.5rem; } .hero_scroll { display: none; } }
+
+    /* Hover interactions.
+       Fixed-angle perspective tilt.
+       Each element tilts to a preset angle; feels 3D. */
+
+    .panel {
+      transform-style: preserve-3d;
+      perspective: 700px;
+    }
+
+    .panel:hover {
+      transform: perspective(700px) rotateX(3deg) rotateY(-4deg) translateY(-4px);
+      box-shadow:
+        0 12px 40px hsla(216,74%,8%,.42),
+        0 4px 12px  hsla(216,74%,8%,.22);
+      transition: transform .22s var(--spring), box-shadow .22s var(--ease);
+    }
+
+    
+    .panel > * {
+      transform: translateZ(12px);
+      transition: transform .22s var(--spring);
+    }
+    .about-card {
+      transform-style: preserve-3d;
+      perspective: 900px;
+    }
+
+    .about-card:hover {
+      transform: perspective(900px) rotateX(-2deg) rotateY(3deg) translateY(-4px);
+      box-shadow:
+        0 16px 56px hsla(216,74%,8%,.12),
+        0 6px 18px  hsla(216,74%,8%,.07);
+      transition: transform .22s var(--spring), box-shadow .22s var(--ease);
+      animation: none;
+      border-left-color: var(--b400);
+    }
+    .edu-card {
+      transform-style: preserve-3d;
+      perspective: 900px;
+    }
+
+    .edu-card:hover {
+      transform: perspective(900px) rotateX(2deg) rotateY(-3deg) translateY(-4px);
+      box-shadow:
+        0 16px 56px hsla(216,74%,8%,.12),
+        0 6px 18px  hsla(216,74%,8%,.07);
+      transition: transform .22s var(--spring), box-shadow .22s var(--ease);
+    }
+
+    .about-card_body,
+    .edu-card_main {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-card:hover .about-card_body::after,
+    .edu-card:hover .edu-card_main::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        110deg,
+        transparent 30%,
+        hsla(216,80%,96%,.12) 50%,
+        transparent 70%
+      );
+      background-size: 200% 100%;
+      animation: card-shimmer .7s var(--ease) 1;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    @keyframes card-shimmer {
+      from { background-position: 200% 0; }
+      to   { background-position: -200% 0; }
+    }
+    .skill:hover + .skill_bar-wrap .skill_bar::after,
+    .skill-item:hover .skill_bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 20%,
+        hsla(216,80%,96%,.4) 50%,
+        transparent 80%
+      );
+      background-size: 200% 100%;
+      animation: card-shimmer .6s var(--ease) 1;
+    }
+
+    .skill_bar { position: relative; overflow: hidden; }
+
+    .tag {
+      transform-style: preserve-3d;
+      perspective: 400px;
+    }
+
+    .tag:hover {
+      transform: perspective(400px) rotateX(-8deg) translateY(-3px) scale(1.04);
+      box-shadow: 0 6px 16px hsla(216,74%,8%,.3);
+    }
+    .chip:hover {
+      transform: perspective(400px) rotateX(-6deg) translateY(-2px);
+      box-shadow: 0 4px 12px hsla(216,56%,50%,.18);
+    }
+    .course-pill:hover {
+      transform: perspective(600px) rotateY(-4deg) translateX(4px);
+      border-left-color: var(--accent);
+      background: var(--b100);
+    }
+    .nav_brand {
+      transition: transform .3s var(--spring), letter-spacing .3s var(--ease);
+    }
+
+    .nav_brand:hover {
+      transform: translateY(-1px);
+      letter-spacing: .06em;
+    }
+    .hero_name {
+      transition: transform .3s var(--spring), text-shadow .3s var(--ease);
+    }
+
+    .hero_name:hover {
+      transform: perspective(600px) translateZ(8px);
+      text-shadow: 0 8px 32px hsla(216,50%,68%,.25);
+    }
+    .hero_degree {
+      transition: letter-spacing .4s var(--ease), opacity .3s var(--ease);
+    }
+
+    .hero_degree:hover {
+      letter-spacing: .22em;
+      opacity: .55;
+    }
+    @keyframes status-float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    .status_radar {
+      animation: status-float 3s ease-in-out infinite;
+    }
+    .lang-row {
+      transition: padding-left .2s var(--spring), background .2s ease;
+      border-radius: 3px;
+    }
+
+    .lang-row:hover {
+      padding-left: .4rem;
+      background: hsla(216,50%,68%,.06);
+    }
+    .s-title {
+      position: relative;
+      display: inline-block;
+    }
+
+    .s-title::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--b400);
+      transition: width .4s var(--ease);
+    }
+
+    .section-wrap:hover .s-title::after {
+      width: 100%;
+    }
+    .hero_eyebrow::before {
+      transition: width .35s var(--ease);
+    }
+
+    .hero_eyebrow:hover::before {
+      width: 40px;
+    }
+    .about-card:hover .about-card_ornament {
+      color: hsla(216,60%,36%,.16);
+      transition: color .3s ease;
+    }
+    .edu-card_badge {
+      transition: transform .2s var(--spring), box-shadow .2s var(--ease);
+    }
+
+    .edu-card:hover .edu-card_badge {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 4px 12px hsla(216,60%,36%,.4);
+    }
+    .panel_title {
+      position: relative;
+    }
+
+    .panel_title::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--b400);
+      transition: width .35s var(--ease);
+    }
+
+    .panel:hover .panel_title::after {
+      width: 100%;
+    }
+
+    
+    .panel,
+    .about-card,
+    .edu-card,
+    .course-pill,
+    .chip,
+    .tag {
+      transition:
+        transform .45s var(--spring),
+        box-shadow .3s var(--ease);
+    }
+    @keyframes divider-pulse {
+      0%,100% { opacity: .6; }
+      50%      { opacity: 1; }
+    }
+
+    .hero_divider {
+      animation: divider-pulse 4s ease-in-out infinite;
+    }
+
+    @media print {
+      .nav, .footer, .hero_scroll, .progress { display: none; }
+      .hero { min-height: auto; padding-top: 2rem; }
+      .page { padding-top: 1.5rem; }
+      .panel, .section-wrap { animation: none !important; opacity: 1; transform: none; }
+      .sidebar { position: static; }
+      .skill_bar { width: var(--bar-w, 70%) !important; }
+    }
+
+  </style>
+</head>
+<body>
+
+  
+  <input type="checkbox" id="nav-chk" style="display:none" aria-hidden="true" />
+
+  
+  <div class="progress" aria-hidden="true"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav_brand">Aditya <strong>Sabui</strong></div>
+
+    <label class="nav_toggle" for="nav-chk" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </label>
+
+    <ul class="nav_links" role="list">
+      <li><a href="#about">About</a></li>
+      <li><a href="#education">Education</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero" id="home">
+    <div class="hero_glow-tr" aria-hidden="true"></div>
+    <div class="hero_grain"   aria-hidden="true"></div>
+
+    <div class="hero_inner">
+      <div>
+        <p class="hero_eyebrow">Curriculum Vitae</p>
+
+        <h1 class="hero_name" aria-label="Aditya Sabui">
+          Aditya<em>Sabui</em>
+        </h1>
+
+        <p class="hero_degree">
+          BBA &nbsp;&middot;&nbsp; Digital Business &amp; Entrepreneurship
+        </p>
+
+        <div class="status" role="status" aria-label="Availability status">
+          <div class="status_radar" aria-hidden="true">
+            <span class="status_ring"></span>
+            <span class="status_ring status_ring--2"></span>
+            <span class="status_core"></span>
+          </div>
+          <div class="status_text">
+            <span class="status_main">Currently available</span>
+            <span class="status_sub">Hover for details</span>
+          </div>
+          <div class="status_reveal" role="tooltip">
+            <p class="status_reveal-title">Looking for</p>
+            <p class="status_item">University internships &amp; summer programs</p>
+            <p class="status_item">Cross-disciplinary research collaboration</p>
+            <p class="status_item">Strategy or digital product projects</p>
+            <p class="status_item">Part-time roles in business or tech</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero_contact">
+        <a href="mailto:aditya.sabui25@iimb.ac.in" class="c-row">
+          <span class="c-label">Email</span>
+          <span class="c-val">aditya.sabui25@iimb.ac.in</span>
+        </a>
+        <div class="c-row">
+          <span class="c-label">Location</span>
+          <span class="c-val">Kolkata, India</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero_divider" aria-hidden="true"></div>
+
+    <div class="hero_scroll" aria-hidden="true">
+      <span>Scroll</span>
+      <span class="hero_scroll-line"></span>
+    </div>
+  </header>
+
+  
+  <div class="page">
+
+    <aside class="sidebar" aria-label="Skills and interests">
+
+      <div class="panel" data-delay="0">
+        <h2 class="panel_title">Skills</h2>
+
+        <div class="skill">
+          <span class="skill_name">Data Analysis</span>
+          <span class="skill_leader" aria-hidden="true"></span>
+          <span class="skill_level">Advanced</span>
+        </div>
+        <div class="skill_bar-wrap"><div class="skill_bar" style="--bar-w:88%"></div></div>
+
+        <div class="skill" style="margin-top:.33rem">
+          <span class="skill_name">Strategic Thinking</span>
+          <span class="skill_leader" aria-hidden="true"></span>
+          <span class="skill_level">Advanced</span>
+        </div>
+        <div class="skill_bar-wrap"><div class="skill_bar" style="--bar-w:84%"></div></div>
+
+        <div class="skill" style="margin-top:.33rem">
+          <span class="skill_name">Research &amp; Synthesis</span>
+          <span class="skill_leader" aria-hidden="true"></span>
+          <span class="skill_level">Proficient</span>
+        </div>
+        <div class="skill_bar-wrap"><div class="skill_bar" style="--bar-w:74%"></div></div>
+
+        <div class="skill" style="margin-top:.33rem">
+          <span class="skill_name">HTML &amp; CSS</span>
+          <span class="skill_leader" aria-hidden="true"></span>
+          <span class="skill_level">Proficient</span>
+        </div>
+        <div class="skill_bar-wrap"><div class="skill_bar" style="--bar-w:72%"></div></div>
+
+        <div class="skill" style="margin-top:.33rem">
+          <span class="skill_name">JavaScript</span>
+          <span class="skill_leader" aria-hidden="true"></span>
+          <span class="skill_level">Working</span>
+        </div>
+        <div class="skill_bar-wrap"><div class="skill_bar" style="--bar-w:54%"></div></div>
+      </div>
+
+      <div class="panel" data-delay="1">
+        <h2 class="panel_title">Areas of Interest</h2>
+        <div class="int-group">
+          <p class="int-group_label">Business</p>
+          <div class="int-group_tags">
+            <span class="tag on">Strategy</span>
+            <span class="tag">Entrepreneurship</span>
+            <span class="tag">Innovation</span>
+          </div>
+        </div>
+        <div class="int-group">
+          <p class="int-group_label">Cross-disciplinary</p>
+          <div class="int-group_tags">
+            <span class="tag">Behavioural Economics</span>
+            <span class="tag">Systems Thinking</span>
+            <span class="tag">Philosophy of Mind</span>
+          </div>
+        </div>
+        <div class="int-group">
+          <p class="int-group_label">Technology</p>
+          <div class="int-group_tags">
+            <span class="tag">Web Development</span>
+            <span class="tag">Digital Products</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-delay="2">
+        <h2 class="panel_title">Languages</h2>
+        <div class="lang-row">
+          <span class="lang-row_name">Hindi</span>
+          <span class="lang-row_level">Native</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-row_name">English</span>
+          <span class="lang-row_level">Fluent</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <main class="main" role="main">
+
+      <section id="about" aria-labelledby="about-title" class="section-wrap">
+        <div class="s-head">
+          <span class="s-num">01.</span>
+          <h2 class="s-title" id="about-title">About</h2>
+          <div class="s-rule" aria-hidden="true"></div>
+        </div>
+
+        <article class="about-card">
+          <div class="about-card_body">
+            <span class="about-card_ornament" aria-hidden="true">&ldquo;</span>
+            <div class="about-card_text">
+              <p>
+                Digital business and entrepreneurship is, by design, a broad degree.
+                That breadth suits me. What I keep coming back to are the questions
+                that live at the edge of fields — where business logic meets how
+                people actually think, or where a technology shifts what is even
+                worth paying attention to in the first place.
+              </p>
+              <p>
+                Getting into HTML and CSS was curiosity more than obligation. I wanted
+                to understand how things on a screen are actually built. The coding
+                itself was useful, but the bigger shift was noticing how much cleaner
+                your thinking about systems becomes once you have tried to construct
+                one yourself, even a small one.
+                <strong>That change in perspective has lasted longer than the skill.</strong>
+              </p>
+              <p>
+                The business side is where I feel most grounded. Not strategy as a
+                neat concept, but the more specific question of what actually makes
+                something work, and what you would see differently if you came at it
+                from a less obvious angle. That instinct is what
+                <em>learning how to learn</em> really points toward.
+              </p>
+            </div>
+          </div>
+          <div class="about-card_chips">
+            <span class="chip">Interdisciplinary Thinking</span>
+            <span class="chip">Learning to Learn</span>
+            <span class="chip">Different Lenses</span>
+            <span class="chip">Strategy</span>
+            <span class="chip">Technology</span>
+          </div>
+        </article>
+      </section>
+
+      <section id="education" aria-labelledby="edu-title" class="section-wrap">
+        <div class="s-head">
+          <span class="s-num">02.</span>
+          <h2 class="s-title" id="edu-title">Education</h2>
+          <div class="s-rule" aria-hidden="true"></div>
+        </div>
+
+        <article class="edu-card">
+          <div class="edu-card_bar" aria-hidden="true"></div>
+          <div class="edu-card_main">
+            <div>
+              <h3 class="edu-card_degree">BBA — Digital Business &amp; Entrepreneurship</h3>
+              <p class="edu-card_school">Indian Institute of Management Bangalore</p>
+            </div>
+            <span class="edu-card__badge">2025 – Present</span>
+          </div>
+          <div class="edu-card_courses">
+            <p class="edu-card_cw-label">Coursework</p>
+            <div class="course-grid">
+              <span class="course-pill">Creativity, Mindset for Innovation &amp; Imagination</span>
+              <span class="course-pill">Financial Statements &amp; Business Performance</span>
+              <span class="course-pill">Business Statistics for Entrepreneurs</span>
+              <span class="course-pill">Business Communication</span>
+              <span class="course-pill">Economics</span>
+              <span class="course-pill">Management Accounts</span>
+              <span class="course-pill">Persuasive Communication</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+    </main>
+  </div>
+
+  
+  <footer class="footer" role="contentinfo">
+    <p class="footer_name">Aditya Sabui</p>
+    <p class="footer_note">BBA &nbsp;&middot;&nbsp; Digital Business &amp; Entrepreneurship &nbsp;&middot;&nbsp; 2026</p>
+  </footer>
+
+</body>
+</html>
